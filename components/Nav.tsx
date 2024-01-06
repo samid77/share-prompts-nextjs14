@@ -8,6 +8,7 @@ import {signIn, signOut, useSession, getProviders} from 'next-auth/react';
 const Nav = () => {
   const isUserLoggedIn = true;
   const [providers, setProviders] = useState<any>(null);
+  const [toggleDropdown, setToggleDropdown] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -34,7 +35,7 @@ const Nav = () => {
       <div className='sm:flex hidden'>
         {isUserLoggedIn 
           ? (
-            <div className='flex gap-3 md:gap-5 ml-3'>
+            <div className='flex gap-3 md:gap-5'>
               <Link href={'/create-prompt'} className='black_btn'>Create Post</Link>
               <button type='button' onClick={() => signOut} className='outline_btn'>Sign Out</button>
               <Link href={'/profile'}>
@@ -61,6 +62,59 @@ const Nav = () => {
               }
             </>
           )}
+      </div>
+      {/** Mobile Navigation */}
+      <div className='flex relative sm:hidden'>
+        {
+          isUserLoggedIn ? (
+            <div className='flex'>
+              <Image 
+                  src={'/assets/images/logo.svg'}
+                  width={37}
+                  height={37}
+                  className='rounded-full cursor-pointer'
+                  alt='Profile Picture'
+                  onClick={() => setToggleDropdown((prev) => !prev)}
+                />
+                {
+                  toggleDropdown ? (
+                    <div className='dropdown'>
+                      <Link href={'/profile'} className='dropdown_link cursor-pointer' onClick={() => setToggleDropdown(false)}>
+                        My Profile
+                      </Link>
+                      <Link href={'/create-prompt'} className='dropdown_link cursor-pointer' onClick={() => setToggleDropdown(false)}>
+                        Create Prompt
+                      </Link>
+                      <button 
+                        type='button' 
+                        onClick={() => {
+                          setToggleDropdown(false);
+                          signOut();
+                        }}>
+                          Sign Out
+                      </button>
+                    </div>
+                  ) : 
+                  (
+                    <>
+                    </>
+                  )
+                }
+            </div>
+          ): (
+            <>
+             {
+                providers && Object.values(providers).map((provider: any) => (
+                  <button 
+                    type='button' 
+                    key={provider.name} 
+                    onClick={() => signIn(provider.id)} 
+                    className='black_btn'>Sign In</button>
+                ) )
+              }
+            </>
+          )
+        }
       </div>
     </nav>
   )
