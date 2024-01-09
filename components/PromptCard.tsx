@@ -1,6 +1,11 @@
 import React from 'react'
 
-const PromptCard = () => {
+interface PromptCardProps {
+  post: any;
+  handleTagClick: () => void;
+}
+
+const PromptCard: React.FC<PromptCardProps> = ({post, handleTagClick}) => {
   return (
     <div>PromptCard</div>
   )
